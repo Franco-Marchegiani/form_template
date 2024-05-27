@@ -1,5 +1,5 @@
 // material-ui
-import { Button, Checkbox, FormControlLabel, Grid, Stack, Typography, TextField, Autocomplete } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Grid, Stack, Typography, TextField,  Step, Stepper, StepLabel, Stack, Autocomplete } from '@mui/material';
 import React from 'react';
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -18,7 +18,7 @@ const validationSchema = yup.object({
 
 // ==============================|| FORM WIZARD - VALIDATION  ||============================== //
 
-const AddressForm = ({ encabezadosData, setEncabezadosData, handleNext, setErrorIndex }) => {
+const AddressForm = ({ encabezadosData, setEncabezadosData, handleNext, setErrorIndex, activeStep, steps }) => {
     const formik = useFormik({
         initialValues: {
             empresa: encabezadosData.empresa,
@@ -118,6 +118,27 @@ const AddressForm = ({ encabezadosData, setEncabezadosData, handleNext, setError
                             param_onBlur_Options={formik.setFieldTouched}
                         />
                     </Grid>
+                    {/* <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+                        {steps.map((label, index) => {
+                            const labelProps = {};
+
+                            if (index === errorIndex) {
+                                labelProps.optional = (
+                                    <Typography variant="caption" color="error">
+                                        Error
+                                    </Typography>
+                                );
+
+                                labelProps.error = true;
+                            }
+
+                            return (
+                                <Step key={label}>
+                                    <StepLabel {...labelProps}>{label}</StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper> */}
                     <Grid item xs={12}>
                         <Stack direction="row" justifyContent="flex-end">
                             <AnimateButton>

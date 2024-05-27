@@ -45,47 +45,55 @@ const validationSchema = yup.object({
 
 // ==============================|| FORM WIZARD - VALIDATION  ||============================== //
 
-export default function PaymentForm({ partidaItemData, setPartidaItemData, handleNext, handleBack, setErrorIndex }) {
+export default function PaymentForm({ partidaItemData, setPartidaItemData, handleNext, handleBack, setErrorIndex, encabezadosData }) {
 
+    const initialValues = {
+        purchase_order: '',
+        fecha_despacho: '',
+        sku: '',
+        denominacion: '',
+        tipo_de_bien: '',
+        costo_usd: '',
+        cantidad: '',
+      };
     // Estado inicial con un formulario único
-    const [formIds, setFormIds] = useState([uuidv4()]);
+    const [formStates, setFormStates] = useState([
+        // Inicializa el primer formulario con un ID único y valores iniciales
+        { id: uuidv4(), formData: initialValues } // initialValues debe ser tu objeto con los valores iniciales para cada formulario
+      ]);
+
+    // Función para actualizar los datos de un formulario específico
+    const updateFormState = (id, newFormData) => {
+        setFormStates(currentStates => currentStates.map(formState => 
+            formState.id === id ? { ...formState, formData: newFormData } : formState
+        ));
+    };
 
     //Función para añadir diversos formularios
     const addFormChild = () => {
-        setFormIds(currentIds => [...currentIds, uuidv4()]);
+        setFormStates(currentStates => [...currentStates, { id: uuidv4(), formData: initialValues }]);
     };
     //Función para eliminar campos por ID
     const removeFormChild = (idToRemove) => {
         //Una vez que se ejecuta
-        setFormIds(currentIds => currentIds.filter(id => id !== idToRemove));
+        setFormStates(currentStates => currentStates.filter(formState => formState.id !== idToRemove));
     };
     
 
     const formik = useFormik({
-        initialValues: {
-            purchase_order: partidaItemData.purchase_order,
-            fecha_despacho: partidaItemData.fecha_despacho,
-            sku: partidaItemData.sku,
-            denominacion: partidaItemData.denominacion,
-            tipo_de_bien: partidaItemData.tipo_de_bien,
-            costo_usd: partidaItemData.costo_usd,
-            cantidad: partidaItemData.cantidad,
-        },
+        initialValues,
         validationSchema,
         onSubmit: (values) => {
-            setPartidaItemData({
-                purchase_order: values.purchase_order,
-                fecha_despacho: values.fecha_despacho,
-                sku: values.sku,
-                denominacion: values.denominacion,
-                tipo_de_bien: values.tipo_de_bien,
-                costo_usd: values.costo_usd,
-                cantidad: values.cantidad,
-            });
+            setPartidaItemData(formStates); // Asumiendo que esta función actualiza el estado en el abuelo correctamente
+
             handleNext();
         }
     });
-    const listado_sku_prov = ['947-II', '9502+(2)', '9502+N95', '9542(1)', 'A2', 'A830L', 'AB003', 'AB003.REAC', 'AB004', 'AB004.REAC', 'AB005', 'AB005-ROJO',]
+
+
+    console.log("VALORES EN ARRAY:");
+    console.log(formStates);
+    
     return (
         <>
             <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
@@ -94,18 +102,18 @@ export default function PaymentForm({ partidaItemData, setPartidaItemData, handl
             
             <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={3}> 
-                    {formIds.map((id)  => (
+                    {formStates.map((formState)  => (
                         <PaymentFormChild
-                            key={id}
-                            id={id} //Iteramos el id del array de formIds para que c/u sea único
+                            key={formState.id}
+                            id={formState.id} //Iteramos el id del array de formStates para que c/u sea único
                             formik={formik}
+                            formData={formState.formData}
+                            updateFormState={updateFormState}                        
                             handleNext={handleNext}
                             handleBack={handleBack}
                             setErrorIndex={setErrorIndex}
-                            partidaItemData={partidaItemData}
-                            setPartidaItemData={setPartidaItemData}
-                            removeForm={() => removeFormChild(id)} //Pasamos por parámetro la función.
-                            canRemove={formIds.length > 1} //Añadimos para que NO pueda remover si es menor a 1
+                            removeForm={() => removeFormChild(formState.id)} //Pasamos por parámetro la función.
+                            canRemove={formStates.length > 1} //Añadimos para que NO pueda remover si es menor a 1
 
                         />
                     ))}

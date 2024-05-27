@@ -20,6 +20,7 @@ const TextField_Component = (props) => {
                 }}
                 options={options}
                 onBlur={() => param_onBlur_Options(param_name, true)}
+                isOptionEqualToValue={(option, value) => option === value}
                 renderInput={(params) => 
                     <TextField 
                         {...params} 

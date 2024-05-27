@@ -23,6 +23,8 @@ const getStepContent = (step, handleNext, handleBack, setErrorIndex, encabezados
                     setErrorIndex={setErrorIndex}
                     encabezadosData={encabezadosData}
                     setEncabezadosData={setEncabezadosData}
+                    activeStep={activeStep}
+                    steps={steps}
                 />
             );
         case 1:
@@ -33,6 +35,7 @@ const getStepContent = (step, handleNext, handleBack, setErrorIndex, encabezados
                     setErrorIndex={setErrorIndex}
                     partidaItemData={partidaItemData}
                     setPartidaItemData={setPartidaItemData}
+                    encabezadosData={encabezadosData}
                 />
             );
         case 2:
@@ -47,15 +50,18 @@ const getStepContent = (step, handleNext, handleBack, setErrorIndex, encabezados
 const ValidationWizard = () => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [encabezadosData, setEncabezadosData] = React.useState({});
-    const [partidaItemData, setPartidaItemData] = React.useState({});
-    const [errorIndex, setErrorIndex] = React.useState(0);
+    const [partidaItemData, setPartidaItemData] = React.useState([]);
+    const [errorIndex, setErrorIndex] = React.useState(undefined);
+    print("Errores errorIndex")
+    print(errorIndex)
 
-
+    console.log("INFO COMPONENTE ABUELO - Encabezados");
     console.log(encabezadosData);
+    console.log("INFO COMPONENTE ABUELO");
     console.log(partidaItemData);
     const handleNext = () => {
         setActiveStep(activeStep + 1);
-        setErrorIndex(null);
+        setErrorIndex(undefined);
     };
 
     const handleBack = () => {
@@ -67,8 +73,11 @@ const ValidationWizard = () => {
             <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
                 {steps.map((label, index) => {
                     const labelProps = {};
+                    print("LabelProps" + labelProps)
+                    print("Index" + index)
+                    print("Error Index" + errorIndex)
 
-                    if (index === errorIndex) {
+                    /* if (index === errorIndex) {
                         labelProps.optional = (
                             <Typography variant="caption" color="error">
                                 Error
@@ -76,7 +85,7 @@ const ValidationWizard = () => {
                         );
 
                         labelProps.error = true;
-                    }
+                    } */
 
                     return (
                         <Step key={label}>
